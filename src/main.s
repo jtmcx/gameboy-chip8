@@ -587,6 +587,7 @@ op_ldri:
 	ld	[Chip8RegI+0], a
 	ld	a, c
 	ld	[Chip8RegI+1], a
+	call	incpc
 	ret
 
 ;; --------------------------------------------------------------------
@@ -613,6 +614,18 @@ op_jpv0:
 	ld	[Chip8PC+1], a
 	ret
 
+;; --------------------------------------------------------------------
+;; op_rnd
+;; --------------------------------------------------------------------
+
+op_rnd:
+	call	loadvx
+	ld	a, $FF	;; TODO: use an actual random number
+	and	a, c
+	ld	[hl], a
+	call	incpc
+	ret
+
 
 SECTION "jump tables", ROM0
 JumpTabMain:
@@ -628,7 +641,7 @@ dw	_jp_alu	; 0x8___
 dw	op_sne	; 0x9___
 dw	op_ldri	; 0xA___
 dw	op_jpv0	; 0xB___
-dw	incpc	; 0xC___
+dw	op_rnd	; 0xC___
 dw	incpc	; 0xD___
 dw	incpc	; 0xE___
 dw	incpc	; 0xF___
