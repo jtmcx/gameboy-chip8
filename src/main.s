@@ -7,6 +7,7 @@ SECTION "Chip 8 Data", WRAM0
 Chip8Regs:	DS	16	; Chip 8 Registers
 Chip8PC:	DS	2	; Chip 8 Program Counter (big endian)
 Chip8SP:	DS	2	; Chip 8 Stack Pointer (big endian)
+Chip8RegI:	DS	2	; Chip 8 "I" Register
 Chip8Stack:	DS	64	; Chip 8 Stack area (grows upwards)
 
 ;; --------------------------------------------------------------------
@@ -90,6 +91,11 @@ init:
 	;; Clear all registers
 	ld	c, 16
 	ld	hl, Chip8Regs
+	call	bzero
+
+	;; Clear register "I"
+	ld	c, 2
+	ld	hl, Chip8RegI
 	call	bzero
 
 	;; Clear stack area
@@ -571,6 +577,18 @@ op_shl:
 	call	incpc
 	ret
 
+;; --------------------------------------------------------------------
+;; op_ldri
+;; --------------------------------------------------------------------
+
+op_ldri:
+	ld	a, b
+	and	a, $0F
+	ld	[Chip8RegI+0], a
+	ld	a, c
+	ld	[Chip8RegI+1], a
+	ret
+
 
 SECTION "jump tables", ROM0
 JumpTabMain:
@@ -584,7 +602,7 @@ dw	op_ldi	; 0x6___
 dw	op_addi	; 0x7___
 dw	_jp_alu	; 0x8___
 dw	op_sne	; 0x9___
-dw	incpc	; 0xA___
+dw	op_ldri	; 0xA___
 dw	incpc	; 0xB___
 dw	incpc	; 0xC___
 dw	incpc	; 0xD___
