@@ -278,12 +278,51 @@ op_jp:
 	ld	[Chip8PC+1], a
 	ret
 
+;; --------------------------------------------------------------------
+;; op_call
+;; --------------------------------------------------------------------
+
+op_call:
+	;; Dereference program counter into DE
+	ld	a, [Chip8PC+0]
+	ld	d, a
+	ld	a, [Chip8PC+1]
+	ld	e, a
+
+	;; Push address of following instruction onto the chip 8 stack.
+	inc	de
+	inc	de
+	push	de
+	call	stackpush
+	add	sp, 2
+
+	;; Jump to the requested address.
+	jr	op_jp
+
+;; --------------------------------------------------------------------
+;; op_ret
+;; --------------------------------------------------------------------
+
+op_ret:
+	;; Load return address into DE
+	add	sp, -2
+	call	stackpop
+	pop	de
+
+	;; Set the new program counter
+	ld	a, d
+	ld	[Chip8PC+0], a
+	ld	a, e
+	ld	[Chip8PC+1], a
+
+	ret
+
 
 SECTION "jump tables", ROM0
 JumpTabMain:
-dw	incpc	; 0x0___
+dw	op_ret	; 0x0___
 dw	op_jp	; 0x1___
-dw	incpc	; 0x2___
+dw	op_call	; 0x2___
 dw	incpc	; 0x3___
 dw	incpc	; 0x4___
 dw	incpc	; 0x5___
