@@ -461,6 +461,28 @@ op_xor:
 	call	incpc
 	ret
 
+;; --------------------------------------------------------------------
+;; op_add
+;; --------------------------------------------------------------------
+
+op_add:
+	call	loadvy
+	ld	d, a
+	call	loadvx
+	add	a, d
+	ld	[hl], a
+
+	;; Set VF approproiately
+	jr	c, .carry
+	xor	a, a
+	jr	.end
+.carry
+	ld	a, 1
+.end
+	ld	[Chip8Regs+$F], a
+	call	incpc
+	ret
+
 
 SECTION "jump tables", ROM0
 JumpTabMain:
@@ -486,7 +508,7 @@ dw	op_ld	; 0x8__0
 dw	op_or	; 0x8__1
 dw	op_and	; 0x8__2
 dw	op_xor	; 0x8__3
-dw	incpc	; 0x8__4
+dw	op_add	; 0x8__4
 dw	incpc	; 0x8__5
 dw	incpc	; 0x8__6
 dw	incpc	; 0x8__7
