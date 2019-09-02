@@ -529,6 +529,48 @@ op_subn:
 	call	incpc
 	ret
 
+;; --------------------------------------------------------------------
+;; op_shr
+;; --------------------------------------------------------------------
+
+op_shr:
+	call	loadvx
+	ld	d, a
+	bit	0, a
+	jr	z, .clear
+	ld	a, 1
+	jr	.setvf
+.clear
+	xor	a, a
+.setvf
+	ld	[Chip8Regs+$F], a
+	ld	a, d
+	srl	a
+	ld	[hl], a
+	call	incpc
+	ret
+
+;; --------------------------------------------------------------------
+;; op_shl
+;; --------------------------------------------------------------------
+
+op_shl:
+	call	loadvx
+	ld	d, a
+	bit	7, a
+	jr	z, .clear
+	ld	a, 1
+	jr	.setvf
+.clear
+	xor	a, a
+.setvf
+	ld	[Chip8Regs+$F], a
+	ld	a, d
+	sla	a
+	ld	[hl], a
+	call	incpc
+	ret
+
 
 SECTION "jump tables", ROM0
 JumpTabMain:
@@ -556,7 +598,7 @@ dw	op_and	; 0x8__2
 dw	op_xor	; 0x8__3
 dw	op_add	; 0x8__4
 dw	op_sub	; 0x8__5
-dw	incpc	; 0x8__6
+dw	op_shr	; 0x8__6
 dw	op_subn	; 0x8__7
 dw	incpc	; 0x8__8
 dw	incpc	; 0x8__9
@@ -564,5 +606,5 @@ dw	incpc	; 0x8__A
 dw	incpc	; 0x8__B
 dw	incpc	; 0x8__C
 dw	incpc	; 0x8__D
-dw	incpc	; 0x8__E
+dw	op_shl	; 0x8__E
 dw	incpc	; 0x8__F

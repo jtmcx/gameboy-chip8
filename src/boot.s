@@ -7,4 +7,4 @@ REPT $150 - $104
 ENDR
 
 SECTION "chip 8 rom", ROM0[$200]
-INCBIN "test/test_subn.ch8"
+INCBIN "test/test_shl.ch8"
