@@ -394,6 +394,34 @@ op_addi:
 	call	incpc
 	ret
 
+;; --------------------------------------------------------------------
+;; _jp_alu
+;; --------------------------------------------------------------------
+
+_jp_alu:
+	ld	a, c
+	and	a, $0F
+	ld	d, 0
+	ld	e, a
+	ld	hl, JumpTabAlu
+	push	hl
+	push	de
+	call	trampoline
+	add	sp, 4
+	ret
+
+;; --------------------------------------------------------------------
+;; op_ld
+;; --------------------------------------------------------------------
+
+op_ld:
+	call	loadvy
+	ld	d, a
+	call	loadvx
+	ld	[hl], d
+	call	incpc
+	ret
+
 
 SECTION "jump tables", ROM0
 JumpTabMain:
@@ -405,7 +433,7 @@ dw	op_snei	; 0x4___
 dw	op_se	; 0x5___
 dw	op_ldi	; 0x6___
 dw	op_addi	; 0x7___
-dw	incpc	; 0x8___
+dw	_jp_alu	; 0x8___
 dw	op_sne	; 0x9___
 dw	incpc	; 0xA___
 dw	incpc	; 0xB___
@@ -415,7 +443,7 @@ dw	incpc	; 0xE___
 dw	incpc	; 0xF___
 
 JumpTabAlu:
-dw	incpc	; 0x8__0
+dw	op_ld	; 0x8__0
 dw	incpc	; 0x8__1
 dw	incpc	; 0x8__2
 dw	incpc	; 0x8__3
