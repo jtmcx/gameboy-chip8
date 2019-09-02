@@ -317,6 +317,16 @@ op_ret:
 
 	ret
 
+;; --------------------------------------------------------------------
+;; op_ldi
+;; --------------------------------------------------------------------
+
+op_ldi:
+	call	loadvx
+	ld	[hl], c
+	call	incpc
+	ret
+
 
 SECTION "jump tables", ROM0
 JumpTabMain:
@@ -326,7 +336,7 @@ dw	op_call	; 0x2___
 dw	incpc	; 0x3___
 dw	incpc	; 0x4___
 dw	incpc	; 0x5___
-dw	incpc	; 0x6___
+dw	op_ldi	; 0x6___
 dw	incpc	; 0x7___
 dw	incpc	; 0x8___
 dw	incpc	; 0x9___
