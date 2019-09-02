@@ -353,6 +353,36 @@ op_snei:
 	call	incpc
 	ret
 
+;; --------------------------------------------------------------------
+;; op_se
+;; --------------------------------------------------------------------
+
+op_se:
+	call	loadvx
+	ld	d, a
+	call	loadvy
+	cp	a, d
+	jr	nz, .neq
+	call	incpc
+.neq
+	call	incpc
+	ret
+
+;; --------------------------------------------------------------------
+;; op_sne
+;; --------------------------------------------------------------------
+
+op_sne:
+	call	loadvx
+	ld	d, a
+	call	loadvy
+	cp	a, d
+	jr	z, .eq
+	call	incpc
+.eq
+	call	incpc
+	ret
+
 
 SECTION "jump tables", ROM0
 JumpTabMain:
@@ -361,11 +391,11 @@ dw	op_jp	; 0x1___
 dw	op_call	; 0x2___
 dw	op_sei	; 0x3___
 dw	op_snei	; 0x4___
-dw	incpc	; 0x5___
+dw	op_se	; 0x5___
 dw	op_ldi	; 0x6___
 dw	incpc	; 0x7___
 dw	incpc	; 0x8___
-dw	incpc	; 0x9___
+dw	op_sne	; 0x9___
 dw	incpc	; 0xA___
 dw	incpc	; 0xB___
 dw	incpc	; 0xC___
