@@ -422,6 +422,45 @@ op_ld:
 	call	incpc
 	ret
 
+;; --------------------------------------------------------------------
+;; op_or
+;; --------------------------------------------------------------------
+
+op_or:
+	call	loadvy
+	ld	d, a
+	call	loadvx
+	or	a, d
+	ld	[hl], a
+	call	incpc
+	ret
+
+;; --------------------------------------------------------------------
+;; op_and
+;; --------------------------------------------------------------------
+
+op_and:
+	call	loadvy
+	ld	d, a
+	call	loadvx
+	and	a, d
+	ld	[hl], a
+	call	incpc
+	ret
+
+;; --------------------------------------------------------------------
+;; op_xor
+;; --------------------------------------------------------------------
+
+op_xor:
+	call	loadvy
+	ld	d, a
+	call	loadvx
+	xor	a, d
+	ld	[hl], a
+	call	incpc
+	ret
+
 
 SECTION "jump tables", ROM0
 JumpTabMain:
@@ -444,9 +483,9 @@ dw	incpc	; 0xF___
 
 JumpTabAlu:
 dw	op_ld	; 0x8__0
-dw	incpc	; 0x8__1
-dw	incpc	; 0x8__2
-dw	incpc	; 0x8__3
+dw	op_or	; 0x8__1
+dw	op_and	; 0x8__2
+dw	op_xor	; 0x8__3
 dw	incpc	; 0x8__4
 dw	incpc	; 0x8__5
 dw	incpc	; 0x8__6
