@@ -589,6 +589,30 @@ op_ldri:
 	ld	[Chip8RegI+1], a
 	ret
 
+;; --------------------------------------------------------------------
+;; op_jp0
+;; --------------------------------------------------------------------
+
+op_jpv0:
+	;; Load V0 into DE
+	ld	a, [Chip8Regs+$0]
+	ld	d, 0
+	ld	e, a
+
+	;; Load address into HL
+	ld	a, b
+	and	a, $0F
+	ld	h, a
+	ld	l, c
+
+	;; Set the new PC
+	add	hl, de
+	ld	a, h
+	ld	[Chip8PC+0], a
+	ld	a, l
+	ld	[Chip8PC+1], a
+	ret
+
 
 SECTION "jump tables", ROM0
 JumpTabMain:
@@ -603,7 +627,7 @@ dw	op_addi	; 0x7___
 dw	_jp_alu	; 0x8___
 dw	op_sne	; 0x9___
 dw	op_ldri	; 0xA___
-dw	incpc	; 0xB___
+dw	op_jpv0	; 0xB___
 dw	incpc	; 0xC___
 dw	incpc	; 0xD___
 dw	incpc	; 0xE___
