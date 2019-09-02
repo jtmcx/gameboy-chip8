@@ -327,14 +327,40 @@ op_ldi:
 	call	incpc
 	ret
 
+;; --------------------------------------------------------------------
+;; op_sei
+;; --------------------------------------------------------------------
+
+op_sei:
+	call	loadvx
+	cp	a, c
+	jr	nz, .neq
+	call	incpc
+.neq
+	call	incpc
+	ret
+
+;; --------------------------------------------------------------------
+;; op_snei
+;; --------------------------------------------------------------------
+
+op_snei:
+	call	loadvx
+	cp	a, c
+	jr	z, .eq
+	call	incpc
+.eq
+	call	incpc
+	ret
+
 
 SECTION "jump tables", ROM0
 JumpTabMain:
 dw	op_ret	; 0x0___
 dw	op_jp	; 0x1___
 dw	op_call	; 0x2___
-dw	incpc	; 0x3___
-dw	incpc	; 0x4___
+dw	op_sei	; 0x3___
+dw	op_snei	; 0x4___
 dw	incpc	; 0x5___
 dw	op_ldi	; 0x6___
 dw	incpc	; 0x7___
