@@ -383,6 +383,17 @@ op_sne:
 	call	incpc
 	ret
 
+;; --------------------------------------------------------------------
+;; op_addi
+;; --------------------------------------------------------------------
+
+op_addi:
+	call	loadvx
+	add	a, c
+	ld	[hl], a
+	call	incpc
+	ret
+
 
 SECTION "jump tables", ROM0
 JumpTabMain:
@@ -393,7 +404,7 @@ dw	op_sei	; 0x3___
 dw	op_snei	; 0x4___
 dw	op_se	; 0x5___
 dw	op_ldi	; 0x6___
-dw	incpc	; 0x7___
+dw	op_addi	; 0x7___
 dw	incpc	; 0x8___
 dw	op_sne	; 0x9___
 dw	incpc	; 0xA___
